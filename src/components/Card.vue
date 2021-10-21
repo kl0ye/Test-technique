@@ -9,15 +9,18 @@
     <img
       :src="image"
       class="card__img"
+      :alt="`card ${name} of ${suit}`"
       :class="{ 'card__img--select': cardIsSelect }"
     />
-    <button
-      class="card__btn"
-      :class="{ 'card__btn--select': cardIsSelect }"
-      @click="selectCard"
-    >
-      {{ textButton }}
-    </button>
+    <div class="card__btn-container">
+      <button
+        class="card__btn"
+        :class="{ 'card__btn--select': cardIsSelect }"
+        @click="selectCard"
+      >
+        {{ textButton }}
+      </button>
+    </div>
   </div>
 </template>
 
@@ -37,11 +40,10 @@ export default {
       type: String,
       required: true,
     },
-  },
-  data() {
-    return {
-      cardIsSelect: false,
-    };
+    cardIsSelect: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     textButton() {
@@ -50,7 +52,6 @@ export default {
   },
   methods: {
     selectCard() {
-      this.cardIsSelect = !this.cardIsSelect;
       this.$emit("card-selected");
     },
   },
@@ -90,11 +91,13 @@ export default {
     color: #fff;
     font-size: 16px;
     line-height: 19px;
+    margin: 0;
   }
 
   &__img {
     max-width: 97px;
     max-height: 134px;
+    margin: 12px;
 
     &--select {
       width: 55%;
@@ -104,24 +107,64 @@ export default {
 
   &__btn {
     display: flex;
+    font-weight: bold;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     padding: 6px 24px;
     position: static;
-    width: 112px;
+    width: 97px;
     height: 28px;
     left: 40px;
-    margin: 12px 0;
     border-radius: 20px;
     border: none;
     background-color: #FFF;
     text-align: center;
     color: #465254;
+    overflow: hidden;
+
+    &-container {
+      position: relative;
+    }
 
     &--select {
       font-size: 12px;
-      width: 55%;
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      height: 28px;
+      width: 30%;
+      border-radius: 20px;
+      background-color: transparent;
+      transition: 1s all ease;
+    }
+
+    &::after {
+      transition: 1.5s all ease;
+    }
+  }
+
+  &__btn:hover {
+    &::before {
+      width: 100.5%;
+      background-color: #2ABA7E;
+      transition: 1s all ease;
+    }
+
+    &::after {
+      content: "Select";
+      position: absolute;
+      color: #FFF;
+      transition: 1s all ease;
+    }
+  }
+
+  &__btn--select:hover {
+    &::after {
+      content: "Unselect";
     }
   }
 }
@@ -134,6 +177,10 @@ export default {
     &__img {
       max-width: 112px;
       max-height: 157px;
+    }
+
+    &__btn {
+      width: 112px;
     }
   }
 }
